@@ -103,3 +103,30 @@ exports.login = async (req, res) => {
         });
     }
 }
+
+
+exports.getAdminProfile = async (req, res) => {
+    try {
+        const adminId = req.user.userId; // Assuming userId is set in the auth middleware
+        const admin = await Admin.findById(adminId).select('-password'); // Exclude password from response
+
+        if (!admin) {
+            return res.status(200).json({
+                success: false,
+                message: 'Admin not found'
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            admin
+        });
+    } catch (error) {
+        console.error('Error fetching admin profile:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Server error while fetching admin profile'
+        });
+    }
+};
+
